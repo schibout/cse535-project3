@@ -1,0 +1,3 @@
+DB_PATH="/home/zwx/Desktop/ne4j_repo"
+DIC_PATH="/home/zwx/Desktop/cse535_buffalo_directoy"
+OUT_PATH="/home/zwx/Desktop"

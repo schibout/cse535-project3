@@ -46,16 +46,15 @@ class AuthorGraph {
 }
 
 public class NeoGraph {
-	public static final String DB_PATH = "/home/zwx/Desktop/ne4j_repo";
-	public static final String DIC_PATH = "/home/zwx/Desktop/cse535_buffalo_directoy";
-	public static final String OUT_PATH = "/home/zwx/Desktop";
-	public static HashMap<String, DocInfo> docs = new HashMap<String, DocInfo>();
-	public static AuthorGraph authors = new AuthorGraph();
-	public static GraphDatabaseService graphDb = new EmbeddedGraphDatabase(
-			DB_PATH);
+	public static String DB_PATH;
+	public static String DIC_PATH;
+	public static String OUT_PATH;
+	public static HashMap<String, DocInfo> docs;
+	public static AuthorGraph authors;
+	public static GraphDatabaseService graphDb;
 	public static LinkedList<Integer>[] graph;
 	// the map between doc id and author id
-	public static LinkedList<Integer> dtoa = new LinkedList<Integer>(); 
+	public static LinkedList<Integer> dtoa; 
 	public static Node[] node;
 	public static double[] score; // the page rank scores
 	public static int[] outdegree;
@@ -336,6 +335,9 @@ public class NeoGraph {
 		}
 	}
 
+	/*
+	 * the score = link score + author score
+	 */
 	public static void output() {
 		String path = OUT_PATH + "/static_score.txt";
 		try {
@@ -373,8 +375,40 @@ public class NeoGraph {
 			e.printStackTrace();
 		}
 	}
-
+	/*
+	 * load the configure file
+	 */
+	public static void initialize(String path) {
+		BufferedReader br;
+		String line;
+		int i, j;
+		
+		try{
+			//import the configure file
+			br = new BufferedReader(new FileReader(new File(path)));
+			while ((line = br.readLine()) != null){
+				i = line.indexOf("\"");
+				j = line.lastIndexOf("\"");
+				if (line.contains("DB_PATH")){
+					DB_PATH = line.substring(i+1, j);
+				} else if (line.contains("DIC_PATH")){
+					DIC_PATH = line.substring(i+1, j);
+				}else if (line.contains("OUT_PATH")){
+					OUT_PATH = line.substring(i+1, j);
+				}
+			}
+			
+			graphDb = new EmbeddedGraphDatabase(DB_PATH);
+			docs = new HashMap<String, DocInfo>();
+			authors = new AuthorGraph();
+			dtoa = new LinkedList<Integer>(); 
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+	
 	public static void main(String[] args) {
+		initialize(args[0]);
 		System.out.println("reading files...");
 		import_dict();
 		System.out.println("total nodes: " + node_count);
@@ -388,10 +422,9 @@ public class NeoGraph {
 		System.out.println("evaluting page rank score...");
 		pagerank();
 		author_score();
-		// test_score();
 
 		System.out.println("output...");
-		author_score_output();
+		//author_score_output();
 		output();
 
 		System.out.println("application exits");
