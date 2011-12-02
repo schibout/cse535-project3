@@ -67,7 +67,7 @@ public class NeoGraph {
 	 * @param args
 	 */
 	private static enum RelTypes implements RelationshipType {
-		LINK;
+		LINK, AUTHOR;
 	}
 
 	public static void import_dict() {
@@ -152,6 +152,7 @@ public class NeoGraph {
 		src_id = authors.map.get(src);
 		des_id = authors.map.get(des);
 
+		node[src_id].createRelationshipTo(node[des_id], RelTypes.AUTHOR);
 		authors.graph[des_id].add(src_id); // the reversed author graph
 		authors.outdegree[src_id]++;
 		authors.rel_count++;
