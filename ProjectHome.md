@@ -1,0 +1,1 @@
+Third module of search engine. Use neo4j to generate the link and author graph of wiki pages, and compute the page rank score and authority score for ranking documents.
